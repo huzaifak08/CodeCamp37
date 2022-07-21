@@ -34,41 +34,51 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("Home Page"),
       ),
-      body: Column(
-        children: [
-          TextField(
-            controller: _email,
-            decoration: InputDecoration(
-              hintText: "Enter your Email",
-            ),
-          ),
-          TextField(
-            controller: _password,
-            decoration: InputDecoration(hintText: "Enter Your Passoward"),
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextButton(
-            onPressed: () async {
-              // Initialize Firebase
-              await Firebase.initializeApp(
-                  options: DefaultFirebaseOptions.currentPlatform);
+      body: FutureBuilder(
+        // Not TO Initialize Firebase for every button , we use FutureBuilder:
+        // In future write The App Initializer:
 
-              // FirebaseAuth
-              final email = _email.text;
-              final password = _password.text;
-              final userCredential =
-                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                email: email,
-                password: password,
-              );
-              print(userCredential);
-            },
-            child: Text("Register"),
-          )
-        ],
+        future: Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform),
+
+        // In (builder) write the rest of the code.
+
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              TextField(
+                controller: _email,
+                decoration: InputDecoration(
+                  hintText: "Enter your Email",
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              TextField(
+                controller: _password,
+                decoration: InputDecoration(hintText: "Enter Your Passoward"),
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+              ),
+              TextButton(
+                onPressed: () async {
+                  // Initialize Firebase:
+
+                  // FirebaseAuth:
+                  final email = _email.text;
+                  final password = _password.text;
+                  final userCredential = await FirebaseAuth.instance
+                      .createUserWithEmailAndPassword(
+                    email: email,
+                    password: password,
+                  );
+                  print(userCredential);
+                },
+                child: Text("Register"),
+              )
+            ],
+          );
+        },
       ),
     );
   }

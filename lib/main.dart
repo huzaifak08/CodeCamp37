@@ -2,6 +2,9 @@ import 'package:codecamp37/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  // Initialze Firebase One Time for Whole Project:
+
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
