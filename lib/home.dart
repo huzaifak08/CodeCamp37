@@ -44,40 +44,48 @@ class _HomePageState extends State<HomePage> {
         // In (builder) write the rest of the code.
 
         builder: (context, snapshot) {
-          return Column(
-            children: [
-              TextField(
-                controller: _email,
-                decoration: InputDecoration(
-                  hintText: "Enter your Email",
-                ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              TextField(
-                controller: _password,
-                decoration: InputDecoration(hintText: "Enter Your Passoward"),
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-              ),
-              TextButton(
-                onPressed: () async {
-                  // Initialize Firebase:
+          switch (snapshot.connectionState) {
+            // This is the Loading Screen: It has 4 Cases:
+            case ConnectionState.done:
+              return Column(
+                children: [
+                  TextField(
+                    controller: _email,
+                    decoration: InputDecoration(
+                      hintText: "Enter your Email",
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  TextField(
+                    controller: _password,
+                    decoration:
+                        InputDecoration(hintText: "Enter Your Passoward"),
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      // Initialize Firebase:
 
-                  // FirebaseAuth:
-                  final email = _email.text;
-                  final password = _password.text;
-                  final userCredential = await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                    email: email,
-                    password: password,
-                  );
-                  print(userCredential);
-                },
-                child: Text("Register"),
-              )
-            ],
-          );
+                      // FirebaseAuth:
+                      final email = _email.text;
+                      final password = _password.text;
+                      final userCredential = await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      print(userCredential);
+                    },
+                    child: Text("Register"),
+                  )
+                ],
+              );
+            // Default is Compulsory:
+            default:
+              return Text("Loading...");
+          }
         },
       ),
     );
