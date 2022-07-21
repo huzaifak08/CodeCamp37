@@ -3,14 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class LoginView extends StatefulWidget {
+  const LoginView({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home Page"),
+        title: Text("Login Page"),
       ),
       body: FutureBuilder(
         // Not TO Initialize Firebase for every button , we use FutureBuilder:
@@ -71,14 +71,36 @@ class _HomePageState extends State<HomePage> {
                       // FirebaseAuth:
                       final email = _email.text;
                       final password = _password.text;
-                      final userCredential = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-                      print(userCredential);
+
+                      try {
+                        // In Case of Sign In:
+                        final userCredential = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: email, password: password);
+
+                        print(userCredential);
+                        //In Case if you know the error:
+                        // When do not have an account:
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          print("User not Found");
+                        }
+                        // WHen you enter the wrong Password:
+                        else if (e.code == 'wrong-password') {
+                          print("Wrong Password");
+                        }
+                        // print(e.code);
+                      }
+                      /* 
+                         In Case If you dont Know the Error:
+
+                         catch (e) {
+                         print("Some Thing Wrong Happened..");
+                         print(e.runtimeType);
+                         print(e);
+                       } */
                     },
-                    child: Text("Register"),
+                    child: Text("Login"),
                   )
                 ],
               );
