@@ -89,6 +89,9 @@ class _LoginViewState extends State<LoginView> {
                         else if (e.code == 'wrong-password') {
                           print("Wrong Password");
                         }
+                        // else {
+                        //   print(e.code);
+                        // }
                         // print(e.code);
                       }
                       /* 
