@@ -1,5 +1,6 @@
 import 'package:codecamp37/firebase_options.dart';
 import 'package:codecamp37/login.dart';
+import 'package:codecamp37/notes.dart';
 import 'package:codecamp37/verifyEmail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,14 +25,13 @@ class _HomePageState extends State<HomePage> {
             final user = FirebaseAuth.instance.currentUser;
             if (user != null) {
               if (user.emailVerified) {
-                print("Email Verified");
+                return const NotesView();
               } else {
                 return VerifyEmail();
               }
             } else {
               return LoginView();
             }
-            return Text("Done");
 
           default:
             return const CircularProgressIndicator();

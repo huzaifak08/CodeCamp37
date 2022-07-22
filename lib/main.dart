@@ -1,5 +1,6 @@
 import 'package:codecamp37/home.dart';
 import 'package:codecamp37/login.dart';
+import 'package:codecamp37/notes.dart';
 import 'package:codecamp37/registerView.dart';
 import 'package:codecamp37/verifyEmail.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginView(),
+      home: const NotesView(),
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView()
