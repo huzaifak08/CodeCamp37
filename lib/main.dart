@@ -1,12 +1,16 @@
 import 'package:codecamp37/home.dart';
 import 'package:codecamp37/login.dart';
 import 'package:codecamp37/registerView.dart';
+import 'package:codecamp37/verifyEmail.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
   // Initialze Firebase One Time for Whole Project:
 
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -21,7 +25,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const VerifyEmail(),
+      routes: {
+        '/login/': (context) => const LoginView(),
+        '/register/': (context) => const RegisterView()
+      },
     );
   }
 }

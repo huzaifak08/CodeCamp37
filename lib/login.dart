@@ -32,86 +32,72 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login Page"),
+        title: Text("Login view"),
       ),
-      body: FutureBuilder(
-        // Not TO Initialize Firebase for every button , we use FutureBuilder:
-        // In future write The App Initializer:
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            decoration: InputDecoration(
+              hintText: "Enter your Email",
+            ),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: _password,
+            decoration: InputDecoration(hintText: "Enter Your Passoward"),
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+          ),
+          TextButton(
+            onPressed: () async {
+              // Initialize Firebase:
 
-        future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform),
+              // FirebaseAuth:
+              final email = _email.text;
+              final password = _password.text;
 
-        // In (builder) write the rest of the code.
+              try {
+                // In Case of Sign In:
+                final userCredential = await FirebaseAuth.instance
+                    .signInWithEmailAndPassword(
+                        email: email, password: password);
 
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            // This is the Loading Screen: It has 4 Cases:
-            case ConnectionState.done:
-              return Column(
-                children: [
-                  TextField(
-                    controller: _email,
-                    decoration: InputDecoration(
-                      hintText: "Enter your Email",
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  TextField(
-                    controller: _password,
-                    decoration:
-                        InputDecoration(hintText: "Enter Your Passoward"),
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      // Initialize Firebase:
-
-                      // FirebaseAuth:
-                      final email = _email.text;
-                      final password = _password.text;
-
-                      try {
-                        // In Case of Sign In:
-                        final userCredential = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                                email: email, password: password);
-
-                        print(userCredential);
-                        //In Case if you know the error:
-                        // When do not have an account:
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          print("User not Found");
-                        }
-                        // WHen you enter the wrong Password:
-                        else if (e.code == 'wrong-password') {
-                          print("Wrong Password");
-                        }
-                        // else {
-                        //   print(e.code);
-                        // }
-                        // print(e.code);
-                      }
-                      /* 
-                         In Case If you dont Know the Error:
-
-                         catch (e) {
-                         print("Some Thing Wrong Happened..");
-                         print(e.runtimeType);
-                         print(e);
-                       } */
-                    },
-                    child: Text("Login"),
-                  )
-                ],
-              );
-            // Default is Compulsory:
-            default:
-              return Text("Loading...");
-          }
-        },
+                print(userCredential);
+                //In Case if you know the error:
+                // When do not have an account:
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'user-not-found') {
+                  print("User not Found");
+                }
+                // WHen you enter the wrong Password:
+                else if (e.code == 'wrong-password') {
+                  print("Wrong Password");
+                }
+                // else {
+                //   print(e.code);
+                // }
+                // print(e.code);
+              }
+              /* 
+                           In Case If you dont Know the Error:
+    
+                           catch (e) {
+                           print("Some Thing Wrong Happened..");
+                           print(e.runtimeType);
+                           print(e);
+                         } */
+            },
+            child: Text("Login"),
+          ),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/register/', (route) => false);
+              },
+              child: Text("Not Registered Yet? Register here"))
+        ],
       ),
     );
   }
