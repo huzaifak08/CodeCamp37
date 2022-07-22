@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const VerifyEmail(),
+      home: const LoginView(),
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView()

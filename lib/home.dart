@@ -21,14 +21,17 @@ class _HomePageState extends State<HomePage> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            // final user = FirebaseAuth.instance.currentUser;
-            // print(user);
-            // if (user?.emailVerified ?? false) {
-            //   return Text("Done");
-            // } else {
-            //   return VerifyEmail();
-            // }
-            return LoginView();
+            final user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              if (user.emailVerified) {
+                print("Email Verified");
+              } else {
+                return VerifyEmail();
+              }
+            } else {
+              return LoginView();
+            }
+            return Text("Done");
 
           default:
             return const CircularProgressIndicator();
