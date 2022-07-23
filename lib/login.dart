@@ -1,10 +1,10 @@
 import 'package:codecamp37/constants/routes.dart';
 import 'package:codecamp37/firebase_options.dart';
 import 'package:codecamp37/utilities/show_error_dialog.dart';
+import 'package:codecamp37/verifyEmail.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:developer' as devtools show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -69,10 +69,16 @@ class _LoginViewState extends State<LoginView> {
                   password: password,
                 );
 
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(notesRoute, (route) => false);
-                // devtools.log(userCredential.toString());
-
+                final user = FirebaseAuth.instance.currentUser;
+                if (user?.emailVerified ?? false) {
+                  // Email is verified then move to Main UI(Home).
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil(notesRoute, (route) => false);
+                } else {
+                  // Email is not Verified so do not move to (Home).
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmailRoute, (route) => false);
+                }
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
                   await showErrorDialog(context, 'User Not Found');
