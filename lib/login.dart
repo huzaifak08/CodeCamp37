@@ -1,5 +1,6 @@
 import 'package:codecamp37/constants/routes.dart';
 import 'package:codecamp37/firebase_options.dart';
+import 'package:codecamp37/utilities/show_error_dialog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,20 +72,25 @@ class _LoginViewState extends State<LoginView> {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil(notesRoute, (route) => false);
                 // devtools.log(userCredential.toString());
-                //In Case if you know the error:
-                // When do not have an account:
+
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  devtools.log("USer Not Found");
-                }
-                // WHen you enter the wrong Password:
-                else if (e.code == 'wrong-password') {
-                  devtools.log("Weak Password");
+                  await showErrorDialog(context, 'User Not Found');
+                  // devtools.log("USer Not Found");
+                } else if (e.code == 'wrong-password') {
+                  await showErrorDialog(context, 'Wrong Password Entered');
+                  // devtools.log("Weak Password");
+                } else {
+                  await showErrorDialog(context, 'Error : ${e.code}');
                 }
                 // else {
                 //   print(e.code);
                 // }
                 // print(e.code);
+
+                // It is not a FirebaseAuth Exception, Its just the normal one.
+              } catch (e) {
+                await showErrorDialog(context, e.toString());
               }
               /* 
                            In Case If you dont Know the Error:
