@@ -1,3 +1,4 @@
+import 'package:codecamp37/constants/routes.dart';
 import 'package:codecamp37/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
                 );
 
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/notes/', (route) => false);
+                    .pushNamedAndRemoveUntil(notesRoute, (route) => false);
                 // devtools.log(userCredential.toString());
                 //In Case if you know the error:
                 // When do not have an account:

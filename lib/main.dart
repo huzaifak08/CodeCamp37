@@ -1,3 +1,4 @@
+import 'package:codecamp37/constants/routes.dart';
 import 'package:codecamp37/home.dart';
 import 'package:codecamp37/login.dart';
 import 'package:codecamp37/notes.dart';
@@ -28,9 +29,9 @@ class MyApp extends StatelessWidget {
       ),
       home: const LoginView(),
       routes: {
-        '/login/': (context) => const LoginView(),
-        '/register/': (context) => const RegisterView(),
-        '/notes/': (context) => const NotesView()
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        notesRoute: (context) => const NotesView()
       },
     );
   }
