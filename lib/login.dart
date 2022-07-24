@@ -1,10 +1,8 @@
 import 'package:codecamp37/constants/routes.dart';
-import 'package:codecamp37/firebase_options.dart';
+import 'package:codecamp37/services/auth/auth_exceptions.dart';
+import 'package:codecamp37/services/auth/auth_service.dart';
 import 'package:codecamp37/utilities/show_error_dialog.dart';
-import 'package:codecamp37/verifyEmail.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -63,14 +61,11 @@ class _LoginViewState extends State<LoginView> {
 
               try {
                 // In Case of Sign In:
+                await AuthService.firebase()
+                    .login(email: email, password: password);
 
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: email,
-                  password: password,
-                );
-
-                final user = FirebaseAuth.instance.currentUser;
-                if (user?.emailVerified ?? false) {
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
                   // Email is verified then move to Main UI(Home).
                   Navigator.of(context)
                       .pushNamedAndRemoveUntil(notesRoute, (route) => false);
@@ -79,33 +74,13 @@ class _LoginViewState extends State<LoginView> {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       verifyEmailRoute, (route) => false);
                 }
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'user-not-found') {
-                  await showErrorDialog(context, 'User Not Found');
-                  // devtools.log("USer Not Found");
-                } else if (e.code == 'wrong-password') {
-                  await showErrorDialog(context, 'Wrong Password Entered');
-                  // devtools.log("Weak Password");
-                } else {
-                  await showErrorDialog(context, 'Error : ${e.code}');
-                }
-                // else {
-                //   print(e.code);
-                // }
-                // print(e.code);
-
-                // It is not a FirebaseAuth Exception, Its just the normal one.
-              } catch (e) {
-                await showErrorDialog(context, e.toString());
+              } on UserNotFoundAuthException {
+                await showErrorDialog(context, 'User Not Found');
+              } on WeakPasswordAuthException {
+                await showErrorDialog(context, 'Wrong Password Entered');
+              } on GenericAuthException {
+                await showErrorDialog(context, 'Authentication Error');
               }
-              /* 
-                           In Case If you dont Know the Error:
-    
-                           catch (e) {
-                           print("Some Thing Wrong Happened..");
-                           print(e.runtimeType);
-                           print(e);
-                         } */
             },
             child: Text("Login"),
           ),

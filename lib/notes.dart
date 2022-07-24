@@ -1,10 +1,8 @@
 import 'package:codecamp37/constants/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:codecamp37/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
 
-enum MenuAction { logout }
+import 'enums/menu_action.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -25,15 +23,13 @@ class _NotesViewState extends State<NotesView> {
               switch (value) {
                 case MenuAction.logout:
                   final shouldLogout = await showLogOutDialog(context);
-                  // devtools.log(shouldLogout.toString());
+
                   if (shouldLogout) {
-                    await FirebaseAuth.instance.signOut();
+                    await AuthService.firebase().logOut();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(loginRoute, (_) => false);
                   }
               }
-              // Build in Developer pkg
-              // devtools.log(value.toString());
             }),
             itemBuilder: (context) {
               // It returns a List of Items.
