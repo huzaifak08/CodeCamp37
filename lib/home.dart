@@ -1,5 +1,5 @@
 import 'package:codecamp37/login.dart';
-import 'package:codecamp37/notes.dart';
+import 'package:codecamp37/notes/notes_view.dart';
 import 'package:codecamp37/services/auth/auth_service.dart';
 import 'package:codecamp37/verifyEmail.dart';
 import 'package:flutter/material.dart';
