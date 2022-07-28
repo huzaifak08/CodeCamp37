@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:codecamp37/extensions/list/filter.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
@@ -9,6 +10,8 @@ class NotesService {
   Database? _db;
 
   List<DatabaseNote> _notes = [];
+
+  DatabaseUser? _user;
 
   static final NotesService _shared = NotesService._sharedInstance();
   NotesService._sharedInstance() {
@@ -21,14 +24,29 @@ class NotesService {
 
   late final StreamController<List<DatabaseNote>> _noteStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes => _noteStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes =>
+      _noteStreamController.stream.filter((note) {
+        final currentUser = _user;
+        if (currentUser != null) {
+          return note.userId == currentUser;
+        } else {
+          throw UserShouldBeSetBeforeReadingAllNotes();
+        }
+      });
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser(
+      {required String email, bool setAsCurrentUser = true}) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } catch (e) {
       rethrow;
@@ -36,7 +54,6 @@ class NotesService {
   }
 
   Future<void> _cacheNotes() async {
-    await _ensureDbIsOpen();
     final allNotes = await getAllNotes();
     _notes = allNotes.toList();
     _noteStreamController.add(_notes);
@@ -50,10 +67,14 @@ class NotesService {
     await getNote(id: note.id);
 
     // Update DB
-    final updateCount = await db.update(noteTable, {
-      textColumn: text,
-      isSyncedColumn: 0,
-    });
+    final updateCount = await db.update(
+        noteTable,
+        {
+          textColumn: text,
+          isSyncedColumn: 0,
+        },
+        where: 'id = ?',
+        whereArgs: [note.id]);
 
     if (updateCount == 0) {
       throw CouldNotUpdateNote();
