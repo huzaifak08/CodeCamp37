@@ -7,7 +7,7 @@ import 'package:codecamp37/verifyEmail.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'notes/new_notes_view.dart';
+import 'notes/create_update_note_view.dart';
 
 void main() async {
   // Initialze Firebase One Time for Whole Project:
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         verifyEmailRoute: (context) => const VerifyEmail(),
-        newNoteRoute: (context) => const NewNoteView()
+        createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView()
       },
     );
   }
