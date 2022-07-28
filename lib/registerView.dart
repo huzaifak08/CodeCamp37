@@ -1,8 +1,9 @@
 import 'package:codecamp37/constants/routes.dart';
 import 'package:codecamp37/services/auth/auth_exceptions.dart';
 import 'package:codecamp37/services/auth/auth_service.dart';
-import 'package:codecamp37/utilities/show_error_dialog.dart';
 import 'package:flutter/material.dart';
+
+import 'utilities/dialog/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);

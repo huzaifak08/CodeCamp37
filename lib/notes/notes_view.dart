@@ -1,9 +1,11 @@
 import 'package:codecamp37/constants/routes.dart';
+import 'package:codecamp37/notes/notes_list_view.dart';
 import 'package:codecamp37/services/auth/auth_service.dart';
 import 'package:codecamp37/services/crud/notes_services.dart';
 import 'package:flutter/material.dart';
 
 import '../enums/menu_action.dart';
+import '../utilities/dialog/logout_dialog.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -72,14 +74,10 @@ class _NotesViewState extends State<NotesView> {
                       case ConnectionState.active:
                         if (snapshot.hasData) {
                           final allNotes = snapshot.data as List<DatabaseNote>;
-                          return ListView.builder(
-                              itemCount: allNotes.length,
-                              itemBuilder: (context, index) {
-                                final note = allNotes[index];
-                                return ListTile(
-                                  title: Text(note.text),
-                                );
-                                // return Text('Item');
+                          return NotesListView(
+                              notes: (allNotes),
+                              onDeleteNote: (note) async {
+                                await _notesService.deleteNote(id: note.id);
                               });
                         } else {
                           return const CircularProgressIndicator();
@@ -97,28 +95,4 @@ class _NotesViewState extends State<NotesView> {
       ),
     );
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text("Sign Out"),
-        content: Text("Are you sure you want to Logout"),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text('Cancel')),
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text('Log Out')),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
 }
